@@ -48,30 +48,47 @@ interface IValoremERC20Factory {
     //  Accessors
     //////////////////////////////////////////////////////////////*/
 
+    /**
+     * @notice Retrieves the wrapper ERC20 contract address for a supplied Valorem core token ID.
+     * @param tokenId The token ID for which to retrieve the wrapper.
+     * @return The address of the ERC20 wrapper contract.
+     */
+    function wrappers(uint256 tokenId) external returns (address);
+
     /*//////////////////////////////////////////////////////////////
     //  Protocol Admin
     //////////////////////////////////////////////////////////////*/
+
+    /// TODO: feeTo?
 
     /*//////////////////////////////////////////////////////////////
     //  Wrap and unwrap
     //////////////////////////////////////////////////////////////*/
 
     /**
-     * @notice Deploy a new wrapper ERC20 contract for a given token ID
+     * @notice Deploy a new wrapper ERC20 contract for a given token ID.
+     * @param tokenId The Valorem core token ID for which to deploy a wrapper.
+     * @param name The name of the new ERC20 wrapper.
+     * @param symbol The symbol of the new ERC20 wrapper.
      * @return The wrapper ERC20 address.
      */
-    function newWrapperContract() external returns (address); 
+    function newWrapperContract(
+        uint256 tokenId,
+        string memory name,
+        string memory symbol,
+        uint8 decimals) 
+    external returns (address); 
 
     /**
      * @notice Wraps a semifungible valorem core option type or claim in a new ERC20
      * contract.
      * @param tokenId The token or claim ID.
      */
-    function wrapCoreTokens(uint256 tokenId) external;
+    function wrapCoreTokens(uint256 tokenId, address account, uint256 amount) external;
 
     /**
      * @notice Unwraps a semifungible valorem core option type or claim 
      * @param tokenId The token or claim ID.
      */
-    function unwrapCoreTokens(uint256 tokenId) external;
+    function unwrapCoreTokens(uint256 tokenId, address account, uint256 amount) external;
 }

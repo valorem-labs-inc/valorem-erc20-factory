@@ -1,3 +1,0 @@
-[submodule "src/lib/solmate"]
-	path = src/lib/solmate
-	url = https://github.com/transmissions11/solmate.git

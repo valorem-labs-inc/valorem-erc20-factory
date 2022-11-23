@@ -28,7 +28,7 @@ interface IValoremERC20Factory {
      * @notice Emitted when a new ERC20 wrapper is created for a given Valorem core
      * ERC1155 token.
      * @param tokenId The ERC1155 token ID.
-     * @param erc20Address The address of the wrapper erc20 contract. 
+     * @param wrapperAddress The address of the wrapper erc20 contract. 
      */
     event NewValoremWrapper(uint256 indexed tokenId, address indexed wrapperAddress);
 

@@ -34,13 +34,15 @@ interface IValoremERC20Wrapper {
 
     /**
      * @notice Redeems an account's fractionalized share of an options lot for the underlying
-     * and exercise assets.
+     * and exercise assets. Reverts if this contract wraps semifungible options contracts rather
+     * than an options lot claim NFT.
      * @param _account The account for which the ERC20 balance is being redeemed.
      */
     function redeem(address _account) external;
 
     /**
      * @notice Exercises the options associated with the supplied account in the amount specified.
+     * Reverts if this contract wraps an options lot claim NFT rather than semifungible options contracts.
      * @param _account The account exercising the options contracts.
      * @param _amount The amount to exercise.
      */

@@ -11,7 +11,7 @@ pragma solidity 0.8.11;
  * When wrapping a Valorem core ERC1155 semifungible token (i.e. written options contracts)
  * ERC20 tokens will be minted in a 1:1 ratio with those ERC1155 tokens being wrapped.
  *
- * Users with balance can choose to redeem their fractionalized options lot shares 
+ * Users with balance can choose to redeem their fractionalized options lot shares
  * after expiry of the Valore core option type, or exercise their options after the exercise
  * timestamp of the option type (and before expiry).
  *
@@ -21,14 +21,14 @@ interface IValoremERC20Wrapper {
     /**
      * @notice Wraps the specified amount of ERC1155 tokens and sends to specified account.
      * @param _account The account to which ERC20 tokens will be minted.
-     * @param _amount Amount of tokens to be wrapped. 
+     * @param _amount Amount of tokens to be wrapped.
      */
     function wrap(address _account, uint256 _amount) external;
-    
+
     /**
      * @notice Unwraps the specified amount of ERC1155 tokens and sends to specified account.
      * @param _account The account to which ERC20 tokens will be minted.
-     * @param _amount Amount of tokens to be wrapped. 
+     * @param _amount Amount of tokens to be wrapped.
      */
     function unwrap(address _account, uint256 _amount) external;
 

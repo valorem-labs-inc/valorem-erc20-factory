@@ -22,8 +22,8 @@ interface IValoremERC20Wrapper {
      * @notice Wraps the specified amount of ERC1155 tokens and sends to specified account.
      * Reverts if any claims wrapped by this contract have been called, or if this wraps
      * an option type which has expired.
-     * @param account The account to which ERC20 tokens will be minted.
-     * @param receiver Amount of tokens to be wrapped.
+     * @param receiver The account to which ERC20 tokens will be minted.
+     * @param amount Amount of tokens to be wrapped.
      */
     function wrap(address receiver, uint256 amount) external;
 
@@ -31,8 +31,8 @@ interface IValoremERC20Wrapper {
      * @notice Unwraps the specified amount of ERC1155 tokens and sends to specified account.
      * Reverts if this wraps a claim and the current timestamp is after the exercise timestamp,
      * or if this wraps options and the current timestamp is after the expiry timestamp.
-     * @param account The account to which ERC20 tokens will be minted.
-     * @param receiver Amount of tokens to be wrapped.
+     * @param receiver The account to which ERC20 tokens will be minted.
+     * @param amount Amount of tokens to be wrapped.
      */
     function unwrap(address receiver, uint256 amount) external;
 

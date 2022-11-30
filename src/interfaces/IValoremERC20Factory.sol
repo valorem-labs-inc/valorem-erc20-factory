@@ -53,7 +53,7 @@ interface IValoremERC20Factory {
      * @param tokenId The token ID for which to retrieve the wrapper.
      * @return The address of the ERC20 wrapper contract.
      */
-    function wrapper(uint256 tokenId) external returns (address);
+    function wrapper(uint256 tokenId) external returns (address wrapperToken);
 
     /*//////////////////////////////////////////////////////////////
     //  Protocol Admin
@@ -64,27 +64,31 @@ interface IValoremERC20Factory {
     //////////////////////////////////////////////////////////////*/
 
     /**
-     * @notice Deploy a new wrapper ERC20 contract for a given token ID. Reverts
-     * if there is an existing contract for the given token ID.
-     * @param tokenId The Valorem core token ID for which to deploy a wrapper.
-     * @param name The name of the new ERC20 wrapper.
-     * @param symbol The symbol of the new ERC20 wrapper.
-     * @return The wrapper ERC20 address.
+     * @notice Deploy a new ERC20 wrapper for a given Valorem ERC1155 token ID. Reverts
+     * if there is an existing contract for the given token ID. Reverts if the given token ID does
+     * not correspond to an existing option type in the Valorem Core contract.
+     * @param optionId The Valorem core option ID for which to deploy a wrapper. Corresponds to an
+     * option type in the core contract.
+     * @param option True if the new wrapper should wrap options contracts in an ERC20 wrapper. False
+     * if this new wrapper should wrap claims to underlying options lots.
+     * @return wrapperToken The wrapper ERC20 address.
      */
-    function newWrapperContract(uint256 tokenId, string memory name, string memory symbol, uint8 decimals)
-        external
-        returns (address);
+    function newWrapperToken(uint160 optionId, bool option) external returns (address wrapperToken);
 
     /**
-     * @notice Wraps a semifungible valorem core option type or claim in a new ERC20
+     * @notice Wraps a semifungible Valorem core option type or claim in a new ERC20
      * contract.
      * @param tokenId The token or claim ID.
+     * @param receiver The recipient of the newly wrapped ERC20 tokens.
+     * @param amount The amount of the specified token ID to wrap.
      */
-    function wrapCoreTokens(uint256 tokenId, address account, uint256 amount) external;
+    function wrap(uint256 tokenId, address receiver, uint256 amount) external;
 
     /**
-     * @notice Unwraps a semifungible valorem core option type or claim
+     * @notice Unwraps a semifungible Valorem core option type or claim.
      * @param tokenId The token or claim ID.
+     * @param receiver The recipient of the unwrapped ERC1155 tokens.
+     * @param amount The amount of the specified token ID to unwrap.
      */
-    function unwrapCoreTokens(uint256 tokenId, address account, uint256 amount) external;
+    function unwrap(uint256 tokenId, address receiver, uint256 amount) external;
 }

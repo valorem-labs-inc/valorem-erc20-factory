@@ -20,31 +20,36 @@ pragma solidity 0.8.11;
 interface IValoremERC20Wrapper {
     /**
      * @notice Wraps the specified amount of ERC1155 tokens and sends to specified account.
-     * @param _account The account to which ERC20 tokens will be minted.
-     * @param _amount Amount of tokens to be wrapped.
+     * Reverts if any claims wrapped by this contract have been called, or if this wraps
+     * an option type which has expired.
+     * @param receiver The account to which ERC20 tokens will be minted.
+     * @param amount Amount of tokens to be wrapped.
      */
-    function wrap(address _account, uint256 _amount) external;
+    function wrap(address receiver, uint256 amount) external;
 
     /**
      * @notice Unwraps the specified amount of ERC1155 tokens and sends to specified account.
-     * @param _account The account to which ERC20 tokens will be minted.
-     * @param _amount Amount of tokens to be wrapped.
+     * Reverts if this wraps a claim and the current timestamp is after the exercise timestamp,
+     * or if this wraps options and the current timestamp is after the expiry timestamp.
+     * @param receiver The account to which ERC20 tokens will be minted.
+     * @param amount Amount of tokens to be wrapped.
      */
-    function unwrap(address _account, uint256 _amount) external;
+    function unwrap(address receiver, uint256 amount) external;
 
     /**
      * @notice Redeems an account's fractionalized share of an options lot for the underlying
      * and exercise assets. Reverts if this contract wraps semifungible options contracts rather
-     * than an options lot claim NFT.
-     * @param _account The account for which the ERC20 balance is being redeemed.
+     * than an options lot claim NFT. Reverts if this is called before the expiry timestamp.
+     * @param receiver The account for which the ERC20 balance is being redeemed.
      */
-    function redeem(address _account) external;
+    function redeem(address receiver) external;
 
     /**
      * @notice Exercises the options associated with the supplied account in the amount specified.
      * Reverts if this contract wraps an options lot claim NFT rather than semifungible options contracts.
-     * @param _account The account exercising the options contracts.
-     * @param _amount The amount to exercise.
+     * Reverts if this is called before the exercise timestamp.
+     * @param receiver The account exercising the options contracts.
+     * @param amount The amount to exercise.
      */
-    function exercise(address _account, uint256 _amount) external;
+    function exercise(address receiver, uint256 amount) external;
 }

@@ -51,7 +51,7 @@ interface IValoremERC20Factory {
     /**
      * @notice Retrieves the wrapper ERC20 contract address for a supplied Valorem core token ID.
      * @param tokenId The token ID for which to retrieve the wrapper.
-     * @return The address of the ERC20 wrapper contract.
+     * @return wrapperToken The address of the ERC20 wrapper contract.
      */
     function wrapper(uint256 tokenId) external returns (address wrapperToken);
 

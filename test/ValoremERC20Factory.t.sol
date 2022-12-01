@@ -119,7 +119,22 @@ contract ValoremERC20FactoryTest is Test {
         factory.newWrapperToken(optionId, false);
     }
 
-    function testRevertWhenWrapperAlreadyExists() public {}
+    function testRevertWhenWrapperAlreadyExists() public {
+        uint160 optionId = uint160(testOptionId >> 96);
+        vm.warp(testOption.exerciseTimestamp - 1);
+        address optionWrapper = factory.newWrapperToken(optionId, true);
+        address claimWrapper = factory.newWrapperToken(optionId, false);
+
+        vm.expectRevert(
+            abi.encodeWithSelector(IValoremERC20Factory.WrapperAlreadyExists.selector, optionId, optionWrapper)
+        );
+        factory.newWrapperToken(optionId, true);
+
+        vm.expectRevert(
+            abi.encodeWithSelector(IValoremERC20Factory.WrapperAlreadyExists.selector, optionId, claimWrapper)
+        );
+        factory.newWrapperToken(optionId, false);
+    }
 
     function testNewWrapperTokenBasic() public {}
 

@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: BUSL 1.1
 pragma solidity 0.8.11;
 
+import "valorem-core/interfaces/IOptionSettlementEngine.sol";
+
 import "./interfaces/IValoremERC20Factory.sol";
+import "./ValoremERC20Wrapper.sol";
 
 contract ValoremERC20Factory is IValoremERC20Factory {
     struct Wrappers {
@@ -13,7 +16,7 @@ contract ValoremERC20Factory is IValoremERC20Factory {
 
     mapping(uint160 => Wrappers) internal optionTypeToWrappers;
 
-    address public valoremCore;
+    IOptionSettlementEngine public valoremCore;
 
     /*//////////////////////////////////////////////////////////////
     //  Constructor
@@ -25,7 +28,9 @@ contract ValoremERC20Factory is IValoremERC20Factory {
         if (valoremCoreOptionSettlementEngine == address(0x0)) {
             revert InvalidEngineAddress(valoremCoreOptionSettlementEngine);
         }
-        valoremCore = valoremCoreOptionSettlementEngine;
+        // TODO: verify that this is an engine
+        // TODO: expose admin setter
+        valoremCore = IOptionSettlementEngine(valoremCoreOptionSettlementEngine);
     }
 
     function wrapper(uint256 tokenId) external returns (address wrapperToken) {
@@ -34,7 +39,35 @@ contract ValoremERC20Factory is IValoremERC20Factory {
 
     /// @inheritdoc IValoremERC20Factory
     function newWrapperToken(uint160 optionId, bool option) external returns (address wrapperToken) {
-        revert();
+        // retrieve option type from core
+        IOptionSettlementEngine.Option memory optionType = valoremCore.option((uint256(optionId) << 96));
+
+        // revert if option is not initialized
+        if (optionType.underlyingAsset == address(0)) {
+            revert OptionTypeNotInitialized(optionId);
+        }
+
+        // revert if option is after exercise timestamp
+        if (block.timestamp >= optionType.exerciseTimestamp) {
+            revert InvalidOptionToWrap(optionId, optionType.exerciseTimestamp);
+        }
+
+        ERC20 underlying = ERC20(optionType.underlyingAsset);
+        ERC20 exercise = ERC20(optionType.exerciseAsset);
+
+        bytes memory name;
+        bytes memory symbol;
+
+        // generate name, symbol
+        if (option) {
+            name = abi.encodePacked("Valorem ", exercise.name, " -> ", underlying.name, " option");
+            symbol = abi.encodePacked(exercise.symbol, ">", underlying.symbol);
+        } else {
+            name = abi.encodePacked("Valorem ", exercise.name, "->", underlying.name, " option lot claim");
+            symbol = abi.encodePacked(exercise.symbol, "&", underlying.symbol);
+        }
+
+
     }
 
     /// @inheritdoc IValoremERC20Factory

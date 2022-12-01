@@ -78,7 +78,8 @@ contract ValoremERC20Factory is IValoremERC20Factory {
         }
 
         // deploy new wrapper
-        ValoremERC20Wrapper wrapper = new ValoremERC20Wrapper(string(name), string(symbol), address(valoremCore), optionId, option);
+        ValoremERC20Wrapper wrapper =
+            new ValoremERC20Wrapper(string(name), string(symbol), address(valoremCore), optionId, option);
         address wrapperAddress = address(wrapper);
 
         if (option) {

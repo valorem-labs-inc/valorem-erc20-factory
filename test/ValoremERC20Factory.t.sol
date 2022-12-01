@@ -88,24 +88,40 @@ contract ValoremERC20FactoryTest is Test {
 
     function testRevertWhenOptionTypeNotInitialized() public {
         uint160 uninitializedOptionId = 0x42;
-        vm.expectRevert(abi.encodeWithSelector(IValoremERC20Factory.OptionTypeNotInitialized.selector, uninitializedOptionId));
+        vm.expectRevert(
+            abi.encodeWithSelector(IValoremERC20Factory.OptionTypeNotInitialized.selector, uninitializedOptionId)
+        );
         factory.newWrapperToken(uninitializedOptionId, true);
 
-        vm.expectRevert(abi.encodeWithSelector(IValoremERC20Factory.OptionTypeNotInitialized.selector, uninitializedOptionId));
+        vm.expectRevert(
+            abi.encodeWithSelector(IValoremERC20Factory.OptionTypeNotInitialized.selector, uninitializedOptionId)
+        );
         factory.newWrapperToken(uninitializedOptionId, false);
     }
 
     function testRevertWhenInvalidOptionToWrap() public {
+        uint160 optionId = uint160(testOptionId >> 96);
+        // warp to past expiry
+        vm.warp(testOption.expiryTimestamp + 1);
 
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IValoremERC20Factory.InvalidOptionToWrap.selector, optionId, testOption.exerciseTimestamp
+            )
+        );
+        factory.newWrapperToken(optionId, true);
+
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                IValoremERC20Factory.InvalidOptionToWrap.selector, optionId, testOption.exerciseTimestamp
+            )
+        );
+        factory.newWrapperToken(optionId, false);
     }
 
-    function testRevertWhenWrapperAlreadyExists() public {
+    function testRevertWhenWrapperAlreadyExists() public {}
 
-    }
-
-    function testNewWrapperTokenBasic() public {
-
-    }
+    function testNewWrapperTokenBasic() public {}
 
     // copied from OptionSettlementEngine.t.sol
     function _createNewOptionType(
@@ -154,7 +170,7 @@ contract ValoremERC20FactoryTest is Test {
         });
         optionId = _createOptionIdFromStruct(option);
     }
-    
+
     function _createOptionIdFromStruct(IOptionSettlementEngine.Option memory optionInfo)
         internal
         pure

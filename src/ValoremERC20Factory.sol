@@ -77,7 +77,17 @@ contract ValoremERC20Factory is IValoremERC20Factory {
             symbol = abi.encodePacked(exercise.symbol, "&", underlying.symbol);
         }
 
-        
+        // deploy new wrapper
+        ValoremERC20Wrapper wrapper = new ValoremERC20Wrapper(string(name), string(symbol), address(valoremCore), optionId, option);
+        address wrapperAddress = address(wrapper);
+
+        if (option) {
+            wrappers.optionWrapper = wrapperAddress;
+        } else {
+            wrappers.claimWrapper = wrapperAddress;
+        }
+
+        emit NewValoremWrapper(optionId, wrapperAddress, option);
     }
 
     /// @inheritdoc IValoremERC20Factory

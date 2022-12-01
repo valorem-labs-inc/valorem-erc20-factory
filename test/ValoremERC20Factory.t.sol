@@ -16,12 +16,12 @@ contract ValoremERC20FactoryTest is Test {
     OptionSettlementTest private engineTest;
 
     function setUp() public {
-        engine = new OptionSettlementEngine(address(0xdadcafe), address(0xbeefbeef));
         factory = new ValoremERC20Factory(address(engine));
 
         // test code re-use for option settlement engine
         engineTest = new OptionSettlementTest();
         engineTest.setUp();
+        engine = engineTest.engine();
     }
 
     function testRevertWhenInvalidAddress() public {

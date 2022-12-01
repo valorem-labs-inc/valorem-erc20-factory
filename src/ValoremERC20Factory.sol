@@ -7,14 +7,14 @@ import "./interfaces/IValoremERC20Factory.sol";
 import "./ValoremERC20Wrapper.sol";
 
 contract ValoremERC20Factory is IValoremERC20Factory {
-    struct Wrappers {
+    struct OptionTypeWrappers {
         /// @param optionWrapper The address of the ERC20 contract wrapping the options.
         address optionWrapper;
         /// @param claimWrapper The address of the ERC20 contract wrapping the claims.
         address claimWrapper;
     }
 
-    mapping(uint160 => Wrappers) internal optionTypeToWrappers;
+    mapping(uint160 => OptionTypeWrappers) internal optionTypeToWrappers;
 
     IOptionSettlementEngine public valoremCore;
 
@@ -42,6 +42,16 @@ contract ValoremERC20Factory is IValoremERC20Factory {
         // retrieve option type from core
         IOptionSettlementEngine.Option memory optionType = valoremCore.option((uint256(optionId) << 96));
 
+        // revert if a wrapper already exists for this option type
+        OptionTypeWrappers storage wrappers = optionTypeToWrappers[optionId];
+        if (option && wrappers.optionWrapper != address(0)) {
+            revert WrapperAlreadyExists(optionId, wrappers.optionWrapper);
+        }
+
+        if (!option && wrappers.claimWrapper != address(0)) {
+            revert WrapperAlreadyExists(optionId, wrappers.claimWrapper);
+        }
+
         // revert if option is not initialized
         if (optionType.underlyingAsset == address(0)) {
             revert OptionTypeNotInitialized(optionId);
@@ -67,7 +77,7 @@ contract ValoremERC20Factory is IValoremERC20Factory {
             symbol = abi.encodePacked(exercise.symbol, "&", underlying.symbol);
         }
 
-
+        
     }
 
     /// @inheritdoc IValoremERC20Factory

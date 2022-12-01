@@ -63,6 +63,13 @@ interface IValoremERC20Factory {
      */
     error InvalidOptionToWrap(uint160 optionId, uint40 exerciseTimestamp);
 
+    /**
+     * @notice The requested option id type to wrap already has an existing wrapper.
+     * @param optionId The optionId which has already been wrapped.
+     * @param wrapperToken The contract address of the existing ERC20 wrapper.
+     */
+    error WrapperAlreadyExists(uint160 optionId, address wrapperToken);
+
     /*//////////////////////////////////////////////////////////////
     //  Data structures 
     //////////////////////////////////////////////////////////////*/

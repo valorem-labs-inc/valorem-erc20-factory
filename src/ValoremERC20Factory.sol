@@ -22,6 +22,9 @@ contract ValoremERC20Factory is IValoremERC20Factory {
     /// @notice ValoremERC20Factory constructor
     /// @param valoremCoreOptionSettlementEngine Core contract address
     constructor(address valoremCoreOptionSettlementEngine) {
+        if (valoremCoreOptionSettlementEngine == address(0x0)) {
+            revert InvalidEngineAddress(valoremCoreOptionSettlementEngine);
+        }
         valoremCore = valoremCoreOptionSettlementEngine;
     }
 

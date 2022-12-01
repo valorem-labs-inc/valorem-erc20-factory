@@ -41,6 +41,16 @@ interface IValoremERC20Factory {
     event TokensWrapped(uint256 indexed tokenId, address indexed wrapperAddress, uint256 amount);
 
     /*//////////////////////////////////////////////////////////////
+    //  Errors
+    //////////////////////////////////////////////////////////////*/
+
+    /**
+     * @notice The supplied option settelement engine address to the factory is invalid.
+     * @param engineAddress The invalid address.
+     */
+    error InvalidEngineAddress(address engineAddress);
+
+    /*//////////////////////////////////////////////////////////////
     //  Data structures 
     //////////////////////////////////////////////////////////////*/
 

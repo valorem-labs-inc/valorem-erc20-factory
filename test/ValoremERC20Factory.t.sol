@@ -23,4 +23,21 @@ contract ValoremERC20FactoryTest is Test {
         vm.expectRevert(abi.encodeWithSelector(IValoremERC20Factory.InvalidEngineAddress.selector, invalidAddress));
         factory = new ValoremERC20Factory(invalidAddress);
     }
+
+    function testRevertWhenOptionTypeNotInitialized() public {
+        uint160 uninitializedOptionId = 0x42;
+        vm.expectRevert(abi.encodeWithSelector(IValoremERC20Factory.OptionTypeNotInitialized.selector, uninitializedOptionId));
+        factory.newWrapperToken(uninitializedOptionId, true);
+
+        vm.expectRevert(abi.encodeWithSelector(IValoremERC20Factory.OptionTypeNotInitialized.selector, uninitializedOptionId));
+        factory.newWrapperToken(uninitializedOptionId, false);
+    }
+
+    function testRevertWhenWrapperAlreadyExists() public {
+
+    }
+
+    function testNewWrapperTokenBasic() public {
+
+    }
 }

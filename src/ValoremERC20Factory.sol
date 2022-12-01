@@ -39,9 +39,6 @@ contract ValoremERC20Factory is IValoremERC20Factory {
 
     /// @inheritdoc IValoremERC20Factory
     function newWrapperToken(uint160 optionId, bool option) external returns (address wrapperToken) {
-        // retrieve option type from core
-        IOptionSettlementEngine.Option memory optionType = valoremCore.option((uint256(optionId) << 96));
-
         // revert if a wrapper already exists for this option type
         OptionTypeWrappers storage wrappers = optionTypeToWrappers[optionId];
         if (option && wrappers.optionWrapper != address(0)) {
@@ -51,6 +48,9 @@ contract ValoremERC20Factory is IValoremERC20Factory {
         if (!option && wrappers.claimWrapper != address(0)) {
             revert WrapperAlreadyExists(optionId, wrappers.claimWrapper);
         }
+
+        // retrieve and validate option type from core
+        IOptionSettlementEngine.Option memory optionType = valoremCore.option((uint256(optionId) << 96));
 
         // revert if option is not initialized
         if (optionType.underlyingAsset == address(0)) {
@@ -88,6 +88,8 @@ contract ValoremERC20Factory is IValoremERC20Factory {
         }
 
         emit NewValoremWrapper(optionId, wrapperAddress, option);
+
+        return wrapperAddress;
     }
 
     /// @inheritdoc IValoremERC20Factory

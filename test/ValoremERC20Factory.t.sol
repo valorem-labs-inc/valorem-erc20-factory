@@ -3,7 +3,8 @@ pragma solidity 0.8.11;
 
 import "forge-std/Test.sol";
 import {IERC20} from "forge-std/interfaces/IERC20.sol";
-import "valorem-core/OptionSettlementEngine.sol";
+import "valorem-core/src/OptionSettlementEngine.sol";
+import "valorem-core/test/OptionSettlementEngine.t.sol";
 
 import "../src/ValoremERC20Factory.sol";
 
@@ -31,6 +32,10 @@ contract ValoremERC20FactoryTest is Test {
 
         vm.expectRevert(abi.encodeWithSelector(IValoremERC20Factory.OptionTypeNotInitialized.selector, uninitializedOptionId));
         factory.newWrapperToken(uninitializedOptionId, false);
+    }
+
+    function testRevertWhenInvalidOptionToWrap() public {
+
     }
 
     function testRevertWhenWrapperAlreadyExists() public {

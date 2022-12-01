@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL 1.1
 pragma solidity 0.8.11;
 
-import "valorem-core/interfaces/IOptionSettlementEngine.sol";
+import "valorem-core/src/interfaces/IOptionSettlementEngine.sol";
 
 import "./interfaces/IValoremERC20Factory.sol";
 import "./ValoremERC20Wrapper.sol";

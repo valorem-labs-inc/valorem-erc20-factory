@@ -136,7 +136,23 @@ contract ValoremERC20FactoryTest is Test {
         factory.newWrapperToken(optionId, false);
     }
 
-    function testNewWrapperTokenBasic() public {}
+    function testNewWrapperTokenBasic() public {
+        uint160 optionId = uint160(testOptionId >> 96);
+        vm.warp(testOption.exerciseTimestamp - 1);
+
+        address optionWrapper = factory.newWrapperToken(optionId, true);
+        address optionWrapper2 = factory.wrapper(testOptionId);
+        assertEq(optionWrapper, optionWrapper2);
+
+        address claimWrapper = factory.newWrapperToken(optionId, false);
+        address claimWrapper2 = factory.wrapper(testOptionId + 1);
+        assertEq(claimWrapper, claimWrapper2);
+
+        claimWrapper2 = factory.wrapper(testOptionId + 2);
+        assertEq(claimWrapper, claimWrapper2);
+
+        assertFalse(optionWrapper == claimWrapper);
+    }
 
     // copied from OptionSettlementEngine.t.sol
     function _createNewOptionType(

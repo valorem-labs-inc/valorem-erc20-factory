@@ -33,8 +33,14 @@ contract ValoremERC20Factory is IValoremERC20Factory {
         valoremCore = IOptionSettlementEngine(valoremCoreOptionSettlementEngine);
     }
 
-    function wrapper(uint256 tokenId) external returns (address wrapperToken) {
-        revert();
+    function wrapper(uint256 tokenId) external view returns (address wrapperToken) {
+        (uint160 optionKey, uint96 claimNum) = valoremCore.decodeTokenId(tokenId);
+        OptionTypeWrappers memory wrappers = optionTypeToWrappers[optionKey];
+
+        if (claimNum == 0) {
+            return wrappers.optionWrapper;
+        }
+        return wrappers.claimWrapper;
     }
 
     /// @inheritdoc IValoremERC20Factory

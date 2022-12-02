@@ -84,7 +84,7 @@ interface IValoremERC20Factory {
      * @param tokenId The token ID for which to retrieve the wrapper.
      * @return wrapperToken The address of the ERC20 wrapper contract.
      */
-    function wrapper(uint256 tokenId) external returns (address wrapperToken);
+    function wrapper(uint256 tokenId) external view returns (address wrapperToken);
 
     /*//////////////////////////////////////////////////////////////
     //  Protocol Admin

@@ -27,18 +27,49 @@ interface IValoremERC20Factory {
     /**
      * @notice Emitted when a new ERC20 wrapper is created for a given Valorem core
      * ERC1155 token.
-     * @param tokenId The ERC1155 token ID.
+     * @param optionId The option type id in the core valorem contract.
      * @param wrapperAddress The address of the wrapper erc20 contract.
+     * @param option True if the wrapper wraps an option type, false if it wraps claims.
      */
-    event NewValoremWrapper(uint256 indexed tokenId, address indexed wrapperAddress);
+    event NewValoremWrapper(uint160 indexed optionId, address indexed wrapperAddress, bool option);
 
     /**
      * @notice Emitted when Valorem core ERC1155 tokens are wrapped in an ERC20 wrapper.
-     * @param tokenId The ERC1155 token ID to wrap.
+     * @param optionId The option type id in the core valorem contract.
      * @param wrapperAddress The address of the wrapping ERC20 contract.
      * @param amount The amount of tokens to wrap.
      */
-    event TokensWrapped(uint256 indexed tokenId, address indexed wrapperAddress, uint256 amount);
+    event TokensWrapped(uint160 indexed optionId, address indexed wrapperAddress, uint256 amount);
+
+    /*//////////////////////////////////////////////////////////////
+    //  Errors
+    //////////////////////////////////////////////////////////////*/
+
+    /**
+     * @notice The supplied option settelement engine address to the factory is invalid.
+     * @param engineAddress The invalid address.
+     */
+    error InvalidEngineAddress(address engineAddress);
+
+    /**
+     * @notice The supplied optionId has not been initialized in the core contract.
+     * @param optionId The uninitialized option Id.
+     */
+    error OptionTypeNotInitialized(uint160 optionId);
+
+    /**
+     * @notice The supplied optionId cannot be wrapped because it is past expiry or
+     * past the exercise timestamp.
+     * @param optionId The optionId which cannot be wrapped.
+     */
+    error InvalidOptionToWrap(uint160 optionId, uint40 exerciseTimestamp);
+
+    /**
+     * @notice The requested option id type to wrap already has an existing wrapper.
+     * @param optionId The optionId which has already been wrapped.
+     * @param wrapperToken The contract address of the existing ERC20 wrapper.
+     */
+    error WrapperAlreadyExists(uint160 optionId, address wrapperToken);
 
     /*//////////////////////////////////////////////////////////////
     //  Data structures 
@@ -53,7 +84,7 @@ interface IValoremERC20Factory {
      * @param tokenId The token ID for which to retrieve the wrapper.
      * @return wrapperToken The address of the ERC20 wrapper contract.
      */
-    function wrapper(uint256 tokenId) external returns (address wrapperToken);
+    function wrapper(uint256 tokenId) external view returns (address wrapperToken);
 
     /*//////////////////////////////////////////////////////////////
     //  Protocol Admin

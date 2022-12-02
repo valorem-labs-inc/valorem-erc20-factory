@@ -17,7 +17,13 @@ contract ValoremERC20Wrapper is IValoremERC20Wrapper, ERC20 {
     /// @param optionId The id of the valorem core option type.
     /// @param option True if this ERC20 is to wrap fungible ERC115s from the
     /// core contract, False if this ERC20 is to wrap nonfungible claim NFTs.
-    constructor(address valoremCoreOptionSettlementEngine, uint160 optionId, bool option) ERC20("", "", 0) {
+    constructor(
+        string memory _name,
+        string memory _symbol,
+        address valoremCoreOptionSettlementEngine,
+        uint160 optionId,
+        bool option
+    ) ERC20(_name, _symbol, 18) {
         valoremCore = valoremCoreOptionSettlementEngine;
     }
 

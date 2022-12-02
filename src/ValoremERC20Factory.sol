@@ -7,6 +7,7 @@ import "./interfaces/IValoremERC20Factory.sol";
 import "./ValoremERC20Wrapper.sol";
 
 contract ValoremERC20Factory is IValoremERC20Factory {
+    /// @notice A struct to store an options wrapper as well as a claim wrapper.
     struct OptionTypeWrappers {
         /// @param optionWrapper The address of the ERC20 contract wrapping the options.
         address optionWrapper;
@@ -14,8 +15,10 @@ contract ValoremERC20Factory is IValoremERC20Factory {
         address claimWrapper;
     }
 
+    /// @notice The wrappers associated with a given option type id.
     mapping(uint160 => OptionTypeWrappers) internal optionTypeToWrappers;
 
+    /// @notice The OptionSettlementEngine whose ERC1155 tokens this contract wraps.
     IOptionSettlementEngine public valoremCore;
 
     /*//////////////////////////////////////////////////////////////
@@ -33,6 +36,7 @@ contract ValoremERC20Factory is IValoremERC20Factory {
         valoremCore = IOptionSettlementEngine(valoremCoreOptionSettlementEngine);
     }
 
+    /// @inheritdoc IValoremERC20Factory
     function wrapper(uint256 tokenId) external view returns (address wrapperToken) {
         (uint160 optionKey, uint96 claimNum) = valoremCore.decodeTokenId(tokenId);
         OptionTypeWrappers memory wrappers = optionTypeToWrappers[optionKey];

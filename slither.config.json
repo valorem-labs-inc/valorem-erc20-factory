@@ -3,6 +3,6 @@
     "solc_remaps": [
         "forge-std/=lib/forge-std/src/",
         "solmate/=lib/solmate/src/",
-        "valorem-core/=lib/valorem/"
+        "valorem-core/=lib/valorem-core/"
     ]
 }

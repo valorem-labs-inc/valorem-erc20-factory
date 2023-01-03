@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: BUSL 1.1
-pragma solidity 0.8.11;
+pragma solidity 0.8.16;
 
 import "forge-std/Test.sol";
 import {IERC20} from "forge-std/interfaces/IERC20.sol";
 import "valorem-core/src/OptionSettlementEngine.sol";
-import "valorem-core/test/OptionSettlementEngine.t.sol";
 
 import "../src/ValoremERC20Factory.sol";
 

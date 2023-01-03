@@ -196,7 +196,7 @@ contract ValoremERC20FactoryTest is Test {
             exerciseTimestamp: exerciseTimestamp,
             expiryTimestamp: expiryTimestamp,
             settlementSeed: 0, // default zero for settlement seed
-            nextClaimNum: 0 // default zero for next claim id
+            nextClaimKey: 1 // default 1 for next claim id
         });
         optionId = _createOptionIdFromStruct(option);
     }

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BUSL 1.1
-pragma solidity 0.8.11;
+pragma solidity 0.8.16;
 
 /**
  * A wrapper around Valorem core ERC1155 tokens (options and claims).

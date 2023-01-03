@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BUSL 1.1
-pragma solidity 0.8.11;
+pragma solidity 0.8.16;
 
 /**
  * This defines the interface for an ERC20 wrapper factory for Valorem Core nonfungible and
@@ -52,12 +52,6 @@ interface IValoremERC20Factory {
     error InvalidEngineAddress(address engineAddress);
 
     /**
-     * @notice The supplied optionId has not been initialized in the core contract.
-     * @param optionId The uninitialized option Id.
-     */
-    error OptionTypeNotInitialized(uint160 optionId);
-
-    /**
      * @notice The supplied optionId cannot be wrapped because it is past expiry or
      * past the exercise timestamp.
      * @param optionId The optionId which cannot be wrapped.
@@ -70,6 +64,13 @@ interface IValoremERC20Factory {
      * @param wrapperToken The contract address of the existing ERC20 wrapper.
      */
     error WrapperAlreadyExists(uint160 optionId, address wrapperToken);
+
+    /**
+     * @notice The requested option id does not have an associated wrapper.
+     * @param optionId The optionId which has not been wrapped.
+     * @param option True if the wrapper wraps an option type, false if it wraps claims.
+     */
+    error WrapperDoesNotExist(uint160 optionId, bool option);
 
     /*//////////////////////////////////////////////////////////////
     //  Data structures 

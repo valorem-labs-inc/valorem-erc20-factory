@@ -2,11 +2,13 @@
 pragma solidity 0.8.16;
 
 import "valorem-core/src/interfaces/IOptionSettlementEngine.sol";
+import "solmate/tokens/ERC1155.sol";
+import "solmate/utils/SafeTransferLib.sol";
 
 import "./interfaces/IValoremERC20Factory.sol";
 import "./ValoremERC20Wrapper.sol";
 
-contract ValoremERC20Factory is IValoremERC20Factory {
+contract ValoremERC20Factory is IValoremERC20Factory, ERC1155TokenReceiver {
     /// @notice A struct to store an options wrapper as well as a claim wrapper.
     struct OptionTypeWrappers {
         /// @param optionWrapper The address of the ERC20 contract wrapping the options.

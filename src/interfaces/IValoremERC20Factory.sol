@@ -52,12 +52,6 @@ interface IValoremERC20Factory {
     error InvalidEngineAddress(address engineAddress);
 
     /**
-     * @notice The supplied optionId has not been initialized in the core contract.
-     * @param optionId The uninitialized option Id.
-     */
-    error OptionTypeNotInitialized(uint160 optionId);
-
-    /**
      * @notice The supplied optionId cannot be wrapped because it is past expiry or
      * past the exercise timestamp.
      * @param optionId The optionId which cannot be wrapped.

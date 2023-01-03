@@ -72,11 +72,6 @@ contract ValoremERC20Factory is IValoremERC20Factory {
         // retrieve and validate option type from core
         IOptionSettlementEngine.Option memory optionType = valoremCore.option((uint256(optionId) << 96));
 
-        // revert if option is not initialized
-        if (optionType.underlyingAsset == address(0)) {
-            revert OptionTypeNotInitialized(optionId);
-        }
-
         // revert if option is after exercise timestamp
         if (block.timestamp >= optionType.exerciseTimestamp) {
             revert InvalidOptionToWrap(optionId, optionType.exerciseTimestamp);

@@ -4,6 +4,7 @@ pragma solidity 0.8.16;
 import "forge-std/Test.sol";
 import {IERC20} from "forge-std/interfaces/IERC20.sol";
 import "valorem-core/src/OptionSettlementEngine.sol";
+import "valorem-core/test/utils/MockERC20.sol";
 
 import "../src/ValoremERC20Factory.sol";
 
@@ -21,19 +22,19 @@ contract ValoremERC20FactoryTest is Test {
     address public constant CAROL = address(0xC);
 
     // Token interfaces
-    IERC20 public constant DAI = IERC20(DAI_A);
-    IERC20 public constant WETH = IERC20(WETH_A);
-    IERC20 public constant USDC = IERC20(USDC_A);
+    IERC20 internal ERC20A;
+    IERC20 internal ERC20B;
+    IERC20 internal ERC20C;
 
     // Test option
     uint256 private testOptionId;
-    address private testUnderlyingAsset = WETH_A;
+    address private testUnderlyingAsset;
     uint40 private testExerciseTimestamp;
     uint40 private testExpiryTimestamp;
-    address private testExerciseAsset = DAI_A;
+    address private testExerciseAsset;
     uint96 private testUnderlyingAmount = 7 ether; // NOTE: uneven number to test for division rounding
     uint96 private testExerciseAmount = 3000 ether;
-    uint256 private testDuration = 1 days;
+    uint256 private testDuration = 30 days;
 
     IOptionSettlementEngine.Option private testOption;
 
@@ -41,9 +42,32 @@ contract ValoremERC20FactoryTest is Test {
     IValoremERC20Factory public factory;
 
     function setUp() public {
-        vm.createSelectFork(vm.envString("RPC_URL"), 15_000_000); // specify block number to cache for future test runs
         engine = new OptionSettlementEngine(address(42), address(69));
         factory = new ValoremERC20Factory(address(engine));
+
+        ERC20A = IERC20(address(new MockERC20("Mock ERC20 A", "ERC20A", 18)));
+        ERC20B = IERC20(address(new MockERC20("Mock ERC20 B", "ERC20B", 18)));
+        ERC20C = IERC20(address(new MockERC20("Mock ERC20 C", "ERC20C", 18)));
+
+        testUnderlyingAsset = address(ERC20B);
+        testExerciseAsset = address(ERC20A);
+
+        // Pre-load balances and approvals
+        address[3] memory recipients = [ALICE, BOB, CAROL];
+        for (uint256 i = 0; i < recipients.length; i++) {
+            address recipient = recipients[i];
+
+            _mint(recipient, MockERC20(address(ERC20A)), 1000000000 * 1e18);
+            _mint(recipient, MockERC20(address(ERC20B)), 1000000000 * 1e18);
+            _mint(recipient, MockERC20(address(ERC20C)), 1000000000 * 1e18);
+
+            // Approve settlement engine to spend ERC20 token balances
+            vm.startPrank(recipient);
+            ERC20A.approve(address(engine), type(uint256).max);
+            ERC20B.approve(address(engine), type(uint256).max);
+            ERC20C.approve(address(engine), type(uint256).max);
+            vm.stopPrank();
+        }
 
         // Setup test option contract
         testExerciseTimestamp = uint40(block.timestamp);
@@ -57,25 +81,7 @@ contract ValoremERC20FactoryTest is Test {
             expiryTimestamp: testExpiryTimestamp
         });
 
-        // Pre-load balances and approvals
-        address[3] memory recipients = [ALICE, BOB, CAROL];
-        for (uint256 i = 0; i < recipients.length; i++) {
-            address recipient = recipients[i];
-
-            // Now we have 1B in stables and 10M WETH
-            _writeTokenBalance(recipient, DAI_A, 1000000000 * 1e18);
-            _writeTokenBalance(recipient, USDC_A, 1000000000 * 1e6);
-            _writeTokenBalance(recipient, WETH_A, 10000000 * 1e18);
-
-            // Approve settlement engine to spend ERC20 token balances
-            vm.startPrank(recipient);
-            WETH.approve(address(engine), type(uint256).max);
-            DAI.approve(address(engine), type(uint256).max);
-            USDC.approve(address(engine), type(uint256).max);
-            vm.stopPrank();
-        }
-
-        // Approve test contract approval for all on settlement engine ERC1155 token balances
+        // Approve test contract approval for all on settlement engine ERC1156 token balances
         engine.setApprovalForAll(address(this), true);
     }
 
@@ -88,12 +94,12 @@ contract ValoremERC20FactoryTest is Test {
     function testRevertWhenOptionTypeNotInitialized() public {
         uint160 uninitializedOptionId = 0x42;
         vm.expectRevert(
-            abi.encodeWithSelector(IValoremERC20Factory.OptionTypeNotInitialized.selector, uninitializedOptionId)
+            abi.encodeWithSelector(IOptionSettlementEngine.TokenNotFound.selector, uninitializedOptionId << 96)
         );
         factory.newWrapperToken(uninitializedOptionId, true);
 
         vm.expectRevert(
-            abi.encodeWithSelector(IValoremERC20Factory.OptionTypeNotInitialized.selector, uninitializedOptionId)
+            abi.encodeWithSelector(IOptionSettlementEngine.TokenNotFound.selector, uninitializedOptionId << 96)
         );
         factory.newWrapperToken(uninitializedOptionId, false);
     }
@@ -211,7 +217,7 @@ contract ValoremERC20FactoryTest is Test {
         return uint256(optionKey) << 96;
     }
 
-    function _writeTokenBalance(address who, address token, uint256 amt) internal {
-        stdstore.target(token).sig(IERC20(token).balanceOf.selector).with_key(who).checked_write(amt);
+    function _mint(address who, MockERC20 token, uint256 amount) internal {
+        token.mint(who, amount);
     }
 }

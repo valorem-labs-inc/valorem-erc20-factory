@@ -134,16 +134,17 @@ contract ValoremERC20Factory is IValoremERC20Factory, ERC1155TokenReceiver {
      * @param tokenId The token id to decode
      * @return optionKey claimNum The decoded components of the id as described above, padded as required
      */
-    function _decodeTokenId(uint256 tokenId) private pure returns (uint160 optionKey, uint96 claimKey) {
+    function _decodeTokenId(uint256 tokenId) private pure returns (uint160 optionKey, uint96 claimNum) {
         // Move option key to lsb to fit into uint160.
         optionKey = uint160(tokenId >> OPTION_KEY_PADDING);
 
         // Get lower 96b of tokenId for uint96 claim key.
-        claimKey = uint96(tokenId & CLAIM_KEY_MASK);
+        claimNum = uint96(tokenId & CLAIM_KEY_MASK);
     }
 
     function _retrieveWrappers(uint256 tokenId, bool check)
         internal
+        view
         returns (OptionTypeWrappers storage wrappers, uint160 optionKey, uint96 claimNum)
     {
         (optionKey, claimNum) = _decodeTokenId(tokenId);

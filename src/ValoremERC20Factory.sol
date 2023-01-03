@@ -112,14 +112,18 @@ contract ValoremERC20Factory is IValoremERC20Factory, ERC1155TokenReceiver {
 
     /// @inheritdoc IValoremERC20Factory
     function wrap(uint256 tokenId, address receiver, uint256 amount) external {
-        OptionTypeWrappers storage wrappers = _retrieveWrappers(tokenId, true);
+        (OptionTypeWrappers storage wrappers, uint160 optionKey, uint96 claimNum) = _retrieveWrappers(tokenId, true);
+
+        // check if these ERC1155 tokens can be wrapped
 
         revert();
     }
 
     /// @inheritdoc IValoremERC20Factory
     function unwrap(uint256 tokenId, address receiver, uint256 amount) external {
-        OptionTypeWrappers storage wrappers = _retrieveWrappers(tokenId, true);
+        (OptionTypeWrappers storage wrappers, uint160 optionKey, uint96 claimNum) = _retrieveWrappers(tokenId, true);
+
+        // check if these ERC1155 tokens can be unwrapped
 
         revert();
     }
@@ -138,16 +142,19 @@ contract ValoremERC20Factory is IValoremERC20Factory, ERC1155TokenReceiver {
         claimKey = uint96(tokenId & CLAIM_KEY_MASK);
     }
 
-    function _retrieveWrappers(uint256 tokenId, bool check) internal returns (OptionTypeWrappers storage wrappers) {
-        (uint160 optionKey, uint96 claimKey) = _decodeTokenId(tokenId);
+    function _retrieveWrappers(uint256 tokenId, bool check)
+        internal
+        returns (OptionTypeWrappers storage wrappers, uint160 optionKey, uint96 claimNum)
+    {
+        (optionKey, claimNum) = _decodeTokenId(tokenId);
 
         wrappers = optionTypeToWrappers[optionKey];
 
-        if (check && claimKey == 0 && wrappers.optionWrapper == address(0)) {
+        if (check && claimNum == 0 && wrappers.optionWrapper == address(0)) {
             revert WrapperDoesNotExist(optionKey, true);
         }
 
-        if (check && claimKey != 0 && wrappers.claimWrapper == address(0)) {
+        if (check && claimNum != 0 && wrappers.claimWrapper == address(0)) {
             revert WrapperDoesNotExist(optionKey, false);
         }
     }

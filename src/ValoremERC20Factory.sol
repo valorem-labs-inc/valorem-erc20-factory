@@ -130,5 +130,5 @@ contract ValoremERC20Factory is IValoremERC20Factory {
 
         // Get lower 96b of tokenId for uint96 claim key.
         claimKey = uint96(tokenId & CLAIM_KEY_MASK);
-    } 
+    }
 }

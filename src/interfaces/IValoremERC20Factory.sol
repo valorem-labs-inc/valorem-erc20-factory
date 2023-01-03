@@ -65,6 +65,13 @@ interface IValoremERC20Factory {
      */
     error WrapperAlreadyExists(uint160 optionId, address wrapperToken);
 
+    /**
+     * @notice The requested option id does not have an associated wrapper.
+     * @param optionId The optionId which has not been wrapped.
+     * @param option True if the wrapper wraps an option type, false if it wraps claims.
+     */
+    error WrapperDoesNotExist(uint160 optionId, bool option);
+
     /*//////////////////////////////////////////////////////////////
     //  Data structures 
     //////////////////////////////////////////////////////////////*/

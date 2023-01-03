@@ -22,6 +22,16 @@ contract ValoremERC20Factory is IValoremERC20Factory {
     IOptionSettlementEngine public valoremCore;
 
     /*//////////////////////////////////////////////////////////////
+    //  Immutable/Constant - Private
+    //////////////////////////////////////////////////////////////*/
+
+    /// @dev The bit padding for optionKey -> optionId.
+    uint8 private constant OPTION_KEY_PADDING = 96;
+
+    /// @dev The mask to mask out a claimKey from a claimId.
+    uint96 private constant CLAIM_KEY_MASK = 0xFFFFFFFFFFFFFFFFFFFFFFFF;
+
+    /*//////////////////////////////////////////////////////////////
     //  Constructor
     //////////////////////////////////////////////////////////////*/
 
@@ -38,7 +48,7 @@ contract ValoremERC20Factory is IValoremERC20Factory {
 
     /// @inheritdoc IValoremERC20Factory
     function wrapper(uint256 tokenId) external view returns (address wrapperToken) {
-        (uint160 optionKey, uint96 claimNum) = valoremCore.decodeTokenId(tokenId);
+        (uint160 optionKey, uint96 claimNum) = _decodeTokenId(tokenId);
         OptionTypeWrappers memory wrappers = optionTypeToWrappers[optionKey];
 
         if (claimNum == 0) {
@@ -112,4 +122,18 @@ contract ValoremERC20Factory is IValoremERC20Factory {
     function unwrap(uint256 tokenId, address receiver, uint256 amount) external {
         revert();
     }
+
+    /**
+     * @notice Decodes the supplied token id
+     * @dev See tokenType() for encoding scheme
+     * @param tokenId The token id to decode
+     * @return optionKey claimNum The decoded components of the id as described above, padded as required
+     */
+    function _decodeTokenId(uint256 tokenId) private pure returns (uint160 optionKey, uint96 claimKey) {
+        // Move option key to lsb to fit into uint160.
+        optionKey = uint160(tokenId >> OPTION_KEY_PADDING);
+
+        // Get lower 96b of tokenId for uint96 claim key.
+        claimKey = uint96(tokenId & CLAIM_KEY_MASK);
+    } 
 }

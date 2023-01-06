@@ -1,9 +1,12 @@
-Feature: Adapt Valorem Core Tokens to the ERC20 standard with fungible long and short positions
+Feature: ERC20 Token Adapter
 
-    As a Valorem User,
-    I want to adapt Valorem Core 1155 options and claims into long and
-    short fungible ERC20 tokens, so that I can transact using them within the
-    DeFi ecosystem components supporting ERC20 tokens.
+    Given an option type exists in the Valorem Core
+    When the user wants to adapt the options and claims from that type into ERC20 tokens
+    Then the user can adapt the options and claims into ERC20 through the adapter
+    And the the users can hold the adapted ERC20 tokens
+    And the user can exercise the adapted option tokens during the exercise window
+    And the user can wrap/unwrap adapted option tokens any time before expiry
+    And the user can redeem adapted claim tokens at or after expiry
 
     # Token Factory
 

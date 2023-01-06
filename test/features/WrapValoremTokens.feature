@@ -1,44 +1,51 @@
-Feature: Wrap and unwrap Valorem Core tokens
+Feature: Adapt Valorem Core Tokens to the ERC20 standard with fungible long and short positions
 
     As a Valorem User,
-    I want to wrap and unwrap Valorem Core 1155 tokens into ERC20 tokens,
-    so that I can transact using them within the broader DeFi ecosystem.
+    I want to adapt Valorem Core 1155 options and claims into long and
+    short fungible ERC20 tokens, so that I can transact using them within the
+    DeFi ecosystem components supporting ERC20 tokens.
 
-    # Options
+    # Token Factory
 
-    Scenario: User wraps Option token
+    Scenario: User deploys new fungible long and short ERC20 tokens corresponding to an option type
 
-    Scenario: User unwraps Option token
+    Scenario: User writes options of an option type and gets back long and short ERC20 tokens
 
-    Scenario: User exercises Wrapped Option token
+    Scenario: User gets the addresses of the long and short tokens for an existing option type
 
-    Scenario: User checks information / position of Valorem Core token for Wrapped Option token
+    # ERC20 Long Token
 
-    @Revert
-    Scenario: User wraps Option token when insufficient ERC20 approval on exercise asset
+    Scenario: User wraps ERC1155 option token into ERC20 long token for that option type
 
-    @Revert
-    Scenario: User wraps Option token when before exercise period
+    Scenario: User unwraps ERC1155 option token from ERC20 long token for that option type
 
-    @Revert
-    Scenario: User wraps Option token when after exercise period
+    Scenario: User exercises wrapped option token
 
-    @Revert
-    Scenario: User unwraps Option token when before exercise period
-
-    Scenario: User unwraps Option token when after exercise period
-
-    # Claims
-
-    Scenario: User wraps Claim token
-
-    Scenario: User unwraps Claim token
-
-    Scenario: User redeems Wrapped Claim token
-
-    Scenario: User checks information / position of Valore Core token for Wrapped Claim token
+    Scenario: User checks underlying position details for long position
 
     @Revert
-    Scenario: User wraps Claim token when before redemption period
+    Scenario: User unwraps Option token when at or after expiry timestamp
 
-    Scenario: User unwraps Claim token when before redemption period
+    @Revert
+    Scenario: User wraps Option token when at or after expiry timestamp
+
+    @Revert
+    Scenario: User exercises wrapped Option token when before exercise timestamp
+
+    @Revert
+    Scenario: User exercises wrapped Option token when at or after expiry timestamp
+
+    @Revert
+    Scenario: User holds inadequate long tokens to exercise
+
+    # ERC20 Short token
+
+    Scenario: User redeems underlying/exercise assets from short position after expiry
+
+    Scenario: User checks underlying position details for fungible short position
+
+    @Revert
+    Scenario: User redeems before expiry
+
+    @Revert
+    Scenario: User holds inadequate short tokens to redeem

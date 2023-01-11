@@ -29,12 +29,18 @@ Feature: ERC20 Token Adapter
     Scenario: Wrap ERC1155 Options into ERC20 Longs
 
     @Revert
-    Scenario: Wrap ERC1155 Options when at or after expiry timestamp
+    Scenario: Wrap ERC1155 Options when at expiry timestamp
+
+    @Revert
+    Scenario: Wrap ERC1155 Options when after expiry timestamp
 
     Scenario: Unwrap ERC20 Longs into ERC1155 Options
 
     @Revert
-    Scenario: Unwrap ERC20 Longs when at or after expiry timestamp
+    Scenario: Unwrap ERC20 Longs when at expiry timestamp
+
+    @Revert
+    Scenario: Unwrap ERC20 Longs when after expiry timestamp
 
     # ERC20 Long token
 
@@ -46,7 +52,10 @@ Feature: ERC20 Token Adapter
     Scenario: Exercise ERC20 Longs when before exercise timestamp
 
     @Revert
-    Scenario: Exercise ERC20 Longs when at or after expiry timestamp
+    Scenario: Exercise ERC20 Longs when at expiry timestamp
+
+    @Revert
+    Scenario: Exercise ERC20 Longs when after expiry timestamp
 
     @Revert
     Scenario: Exercise ERC20 Longs when user holds insufficient ERC20 Exercise asset

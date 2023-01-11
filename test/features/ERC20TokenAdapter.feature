@@ -1,54 +1,61 @@
 Feature: ERC20 Token Adapter
 
-    Given an option type exists in the Valorem Core
-    When the user wants to adapt the options and claims from that type into ERC20 tokens
-    Then the user can adapt the options and claims into ERC20 through the adapter
-    And the the users can hold the adapted ERC20 tokens
-    And the user can exercise the adapted option tokens during the exercise window
-    And the user can wrap/unwrap adapted option tokens any time before expiry
-    And the user can redeem adapted claim tokens at or after expiry
+    As a Valorem User,
+    I want to use Valorem Core options and claims as long and short ERC20 tokens,
+    so that I can transact within the broader DeFi ecosystem which widely supports ERC20.
 
-    # Token Factory
+    Background: Option Type Setup
+        Given an Option Type exists in the Valorem Core
+        And ERC20 Long and Short Adapter contracts are deployed
 
-    Scenario: User deploys new fungible long and short ERC20 tokens corresponding to an option type
+    # ERC20 Router / Gateway
 
-    Scenario: User writes options of an option type and gets back long and short ERC20 tokens
-
-    Scenario: User gets the addresses of the long and short tokens for an existing option type
-
-    # ERC20 Long Token
-
-    Scenario: User wraps ERC1155 option token into ERC20 long token for that option type
-
-    Scenario: User unwraps ERC1155 option token from ERC20 long token for that option type
-
-    Scenario: User exercises wrapped option token
-
-    Scenario: User checks underlying position details for long position
+    @SkipBackground
+    Scenario: Deploy ERC20 Long and Short Adapter contracts for a given Option Type
 
     @Revert
-    Scenario: User unwraps Option token when at or after expiry timestamp
+    Scenario: Deploy ERC20 Long and Short Adapter contracts for a given Option Type when already deployed
+
+    Scenario: Write new ERC20 Long and Short positions
 
     @Revert
-    Scenario: User wraps Option token when at or after expiry timestamp
+    Scenario: Write new ERC20 Long and Short positions when at expiry timestamp
 
     @Revert
-    Scenario: User exercises wrapped Option token when before exercise timestamp
+    Scenario: Write new ERC20 Long and Short positions when after expiry timestamp
+
+    Scenario: Get addresses of the ERC20 Long and Short tokens for a given Option Type
+
+    Scenario: Wrap ERC1155 Options into ERC20 Longs
 
     @Revert
-    Scenario: User exercises wrapped Option token when at or after expiry timestamp
+    Scenario: Wrap ERC1155 Options when at or after expiry timestamp
+
+    Scenario: Unwrap ERC20 Longs into ERC1155 Options
 
     @Revert
-    Scenario: User holds inadequate long tokens to exercise
+    Scenario: Unwrap ERC20 Longs when at or after expiry timestamp
+
+    # ERC20 Long token
+
+    Scenario: Check position of ERC20 Longs
+
+    Scenario: Exercise ERC20 Longs for ERC20 Underlying asset
+
+    @Revert
+    Scenario: Exercise ERC20 Longs when before exercise timestamp
+
+    @Revert
+    Scenario: Exercise ERC20 Longs when at or after expiry timestamp
+
+    @Revert
+    Scenario: Exercise ERC20 Longs when user holds insufficient ERC20 Exercise asset
 
     # ERC20 Short token
 
-    Scenario: User redeems underlying/exercise assets from short position after expiry
+    Scenario: Check position of ERC20 Shorts
 
-    Scenario: User checks underlying position details for fungible short position
-
-    @Revert
-    Scenario: User redeems before expiry
+    Scenario: Redeem ERC20 Shorts for ERC20 Underlying asset / ERC20 Exercise asset
 
     @Revert
-    Scenario: User holds inadequate short tokens to redeem
+    Scenario: Redeem ERC20 Shorts when before expiry timestamp
